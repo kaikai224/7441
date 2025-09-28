@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>7441Hq | Profile</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      color: white;
+
+      background: url("https://i.pinimg.com/originals/ba/14/ad/ba14ad669e5e53c7681ffeb1004b9b54.gif") no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .profile {
+      text-align: center;
+      max-width: 350px;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid white;
+      margin-bottom: 15px;
+      object-fit: cover;
+      box-shadow: 0 0 15px rgb(255, 255, 255);
+    }
+
+    .username {
+      font-size: 24px;
+      font-weight: bold;
+      font-style: italic;
+      text-shadow: 0 0 5px #fff, 0 0 15px rgb(255, 255, 255);
+    }
+
+    .bio {
+      margin: 10px 0 20px;
+      font-size: 14px;
+      color: #acacac;
+    }
+
+    .glow-button {
+      padding: 15px 30px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid white;
+      border-radius: 70px;
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+      margin: 10px;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .glow-button:hover { box-shadow: 0 0 20px 5px white; }
+    .glow-button:active { transform: scale(0.97); }
+
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: rgb(255, 255, 255);
+      font-size: 1em;
+      user-select: none;
+      pointer-events: none;
+      z-index: 9999;
+      text-shadow: 0 0 5px rgb(0, 0, 0), 0 0 10px rgb(0, 0, 0);
+      animation-name: fall;
+      animation-timing-function: linear;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0.3; }
+    }
+
+    .drop {
+      position: fixed;
+      width: 3px;
+      height: 4px;
+      background: white;
+      border-radius: 3px;
+      opacity: 0.9;
+      pointer-events: none;
+      animation-name: drip;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes drip {
+      to {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+
+    #music-controls { 
+      display:flex; 
+      flex-direction:column; 
+      align-items:center; 
+      background:rgba(0, 0, 0, 0); 
+      padding:20px; 
+      border-radius:12px; 
+      gap:10px; 
+    }
+
+    #song-title { 
+      font-weight:bold; 
+      margin-bottom:5px; 
+      max-width:240px; 
+      text-align:center; 
+      min-height:18px; 
+    }
+
+    .controls-row { display:flex; gap:8px; }
+
+    button { 
+      padding:8px 12px; 
+      border:none; 
+      border-radius:6px; 
+      cursor:pointer; 
+      background:rgba(0, 0, 0, 0.2); 
+      color:rgb(255, 255, 255); 
+      font-size:18px; 
+      transition:0.2s;
+    }
+
+    button:hover { background:rgba(255,255,255,0.35); }
+    button.active { background:rgb(65, 53, 53); color:rgb(0, 0, 0); }
+
+    #progress-container { 
+      width:240px; 
+      height:10px; 
+      background:rgba(255, 255, 255, 0.24); 
+      border-radius:5px; 
+      overflow:hidden; 
+      margin-top:5px; 
+    }
+
+    #progress-bar { 
+      width:0%; 
+      height:100%; 
+      background:rgb(0, 0, 0); 
+    }
+  </style>
+</head>
+<body>
+  <div class="profile">
+    <img src="https://i.pinimg.com/736x/b7/6a/1e/b76a1e4f0c2c33d299f846963aea0a1f.jpg" alt="Avatar" class="avatar">
+    <div class="username">7441 Hq</div>
+    <div class="bio">extortion ender</div>
+
+    <button class="glow-button" onclick="window.location.href='https://discord.gg/nmzeWCPwEq'"><i>2n9 Server</i></button>
+    <button class="glow-button" onclick="window.location.href='https://discord.com/user/1399976163539026020'"><i>Discord</i></button>
+    <button class="glow-button" onclick="window.location.href='https://t.me/endextortion'"><i>Hanakos Telegram</i></button>
+    <button class="glow-button" onclick="window.location.href='https://discord.com/user/1397821279788073071'"><i>Other Discord</i></button>
+  </div>
+
+  <!-- Music controls -->
+  <audio id="bg-music"></audio>
+  <div id="music-controls">
+    <span id="song-title"></span>
+    <div class="controls-row">
+      <button id="shuffle">⇆</button>
+      <button id="prev">⏮</button>
+      <button id="play">⏯</button>
+      <button id="next">⏭</button>
+      <button id="loop">↻</button>
+    </div>
+    <div id="progress-container"><div id="progress-bar"></div></div>
+  </div>
+
+  <script>
+    /* snowflakes */
+    const snowflakeCount = 50;
+    const symbols = ["♱", "⛥"];
+    for (let i = 0; i < snowflakeCount; i++) {
+      const snowflake = document.createElement("div");
+      snowflake.classList.add("snowflake");
+      snowflake.innerText = symbols[Math.floor(Math.random()*symbols.length)];
+      snowflake.style.fontSize = Math.random()*10+10+"px";
+      snowflake.style.left = Math.random()*window.innerWidth+"px";
+      snowflake.style.animationDuration = Math.random()*5+5+"s";
+      snowflake.style.animationDelay = Math.random()*10+"s";
+      document.body.appendChild(snowflake);
+      snowflake.addEventListener("animationend", () => snowflake.remove());
+    }
+
+    setInterval(() => {
+      const flake = document.createElement("div");
+      flake.classList.add("snowflake");
+      flake.innerText = symbols[Math.floor(Math.random()*symbols.length)];
+      flake.style.fontSize = Math.random()*10+10+"px";
+      flake.style.left = Math.random()*window.innerWidth+"px";
+      flake.style.animationDuration = Math.random()*5+5+"s";
+      flake.style.animationDelay = "0s";
+      document.body.appendChild(flake);
+      flake.addEventListener("animationend", () => flake.remove());
+    }, 300);
+
+    /* raindrops */
+    const maxDrops = 20; 
+    let drops = [];
+    function createDrop(x, y) {
+      const drop = document.createElement('div');
+      drop.className = 'drop';
+      drop.style.left = x+"px";
+      drop.style.top = y+"px";
+      drop.style.animationDuration = (Math.random()*1.5+1.5).toFixed(2)+"s";
+      document.body.appendChild(drop);
+      drop.addEventListener('animationend', () => {
+        drop.remove();
+        drops = drops.filter(d => d !== drop);
+      });
+      drops.push(drop);
+      if (drops.length > maxDrops) { drops.shift().remove(); }
+    }
+    window.addEventListener('mousemove', e => {
+      for (let i=0;i<3;i++) {
+        createDrop(e.clientX+(Math.random()-0.5)*10, e.clientY+(Math.random()-0.5)*10);
+      }
+    });
+
+    /* music player */
+    const songs = [
+      {title:'Wasted - Juice WRLD Ft. Lil Uzi Vert', src:'music/wasted.mp3'},
+      {title:'Headshot - Lil Tjay Ft. Polo G & Fivio', src:'music/song2.mp3'},
+      {title:'All the time - Destroy Lonely', src:'music/song3.mp3'},
+      {title:'Swervin - A Boogie Wit da Hoodie Ft. 6ix9ine', src:'music/song4.mp3'},
+      {title:"Ain't Nuthin - Rich Amiri", src:'music/song5.mp3'},
+      {title:'Campfire Freestyle - Juice WRLD', src:'music/song6.mp3'},
+      {title:'Leanin - Lil Peep', src:'music/song7.mp3'},
+      {title:'Wake me - Lil Peep', src:'music/song8.mp3'},
+      {title:'Watch - Lil Peep', src:'music/song9.mp3'},
+      {title:'Choose - Lil Peep', src:'music/song10.mp3'},
+    ];
+
+    let currentIndex=0, isShuffle=false, isLoop=false;
+    const music=document.getElementById('bg-music');
+    const songTitle=document.getElementById('song-title');
+    const playBtn=document.getElementById('play');
+    const prevBtn=document.getElementById('prev');
+    const nextBtn=document.getElementById('next');
+    const shuffleBtn=document.getElementById('shuffle');
+    const loopBtn=document.getElementById('loop');
+    const progressBar=document.getElementById('progress-bar');
+
+    function loadSong(){
+      music.src=songs[currentIndex].src;
+      songTitle.textContent=songs[currentIndex].title;
+    }
+
+    playBtn.onclick=()=> music.paused ? music.play() : music.pause();
+    prevBtn.onclick=()=> skipSong(-1);
+    nextBtn.onclick=()=> skipSong(1);
+    shuffleBtn.onclick=()=> { isShuffle=!isShuffle; shuffleBtn.classList.toggle('active'); };
+    loopBtn.onclick=()=> { isLoop=!isLoop; loopBtn.classList.toggle('active'); };
+
+    music.ontimeupdate=()=> {
+      if(!isNaN(music.duration)) progressBar.style.width=(music.currentTime/music.duration)*100+'%';
+    };
+    music.onended=()=> { if(isLoop){ music.currentTime=0; music.play(); } else { skipSong(1); } };
+
+    function skipSong(dir){
+      if(isShuffle){
+        let next;
+        do{ next=Math.floor(Math.random()*songs.length);} while(next===currentIndex);
+        currentIndex=next;
+      } else {
+        currentIndex=(currentIndex+dir+songs.length)%songs.length;
+      }
+      loadSong();
+      music.play().catch(()=>{});
+    }
+
+    loadSong();
+  </script>
+</body>
+</html>
